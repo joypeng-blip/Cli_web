@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&family=Lexend:wght@100;200;300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Noto+Sans+TC:wght@100;300;400;500;700&display=swap');
-        
+
         :root {
             --font-display: 'Plus Jakarta Sans', sans-serif;
             --font-ui: 'Lexend', 'Noto Sans TC', sans-serif;
             --font-logo: 'Montserrat', sans-serif;
         }
-        
+
         body {
             font-family: var(--font-ui);
             background-color: #0a0c10;
@@ -22,28 +23,87 @@
             overflow: hidden;
         }
 
-        .font-display { font-family: var(--font-display); }
-        .font-logo { font-family: var(--font-logo); font-weight: 300; }
-        
+        .font-display {
+            font-family: var(--font-display);
+        }
+
+        .font-logo {
+            font-family: var(--font-logo);
+            font-weight: 300;
+        }
+
         /* 自定義滾動條 */
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #334155; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
 
         /* 彈窗動畫 */
-        @keyframes customFadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes customZoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        @keyframes toastSlideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
-        
-        .animate-custom-fade-in { animation: customFadeIn 0.3s ease-out forwards; }
-        .animate-custom-zoom-in { animation: customZoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-toast { animation: toastSlideUp 0.3s ease-out forwards; }
+        @keyframes customFadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes customZoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes toastSlideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .animate-custom-fade-in {
+            animation: customFadeIn 0.3s ease-out forwards;
+        }
+
+        .animate-custom-zoom-in {
+            animation: customZoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-toast {
+            animation: toastSlideUp 0.3s ease-out forwards;
+        }
 
         /* 原生平滑捲動 */
-        html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+        }
     </style>
 </head>
+
 <body>
     <div id="root"></div>
 
@@ -62,7 +122,7 @@
             useEffect(() => {
                 if (iconRef.current && window.lucide) {
                     const iconName = name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
-                    
+
                     const tempDiv = document.createElement('div');
                     const i = document.createElement('i');
                     i.setAttribute('data-lucide', name);
@@ -71,12 +131,12 @@
                     window.lucide.createIcons({
                         root: tempDiv,
                         nameAttr: 'data-lucide',
-                        attrs: { 
-                            width: size, 
-                            height: size, 
-                            class: className, 
-                            fill: fill, 
-                            'stroke-width': 2 
+                        attrs: {
+                            width: size,
+                            height: size,
+                            class: className,
+                            fill: fill,
+                            'stroke-width': 2
                         }
                     });
 
@@ -117,7 +177,7 @@
             const [isJournalOpen, setIsJournalOpen] = useState(false);
             const [expandedSection, setExpandedSection] = useState('notes');
             const [toast, setToast] = useState(null);
-            
+
             const [activeMenu, setActiveMenu] = useState(null);
             const [editingId, setEditingId] = useState(null);
             const [editingField, setEditingField] = useState(null);
@@ -137,17 +197,17 @@
 
             const handleSendMessage = (e) => {
                 if (e) { e.preventDefault(); e.stopPropagation(); }
-                
+
                 if (isComposing || (e && e.nativeEvent && e.nativeEvent.isComposing)) {
                     return;
                 }
 
                 const text = chatInput.trim();
                 if (!text) return;
-                
+
                 setChatInput('');
                 if (textareaRef.current) textareaRef.current.value = '';
-                
+
                 if (selectedProject && !projects.find(p => p.id === selectedProject.id)) {
                     setProjects(prev => [selectedProject, ...prev]);
                 }
@@ -174,8 +234,8 @@
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         setUploadedImages(prev => [
-                            ...prev, 
-                            { id: Math.random(), name: file.name, size: (file.size/1024).toFixed(1) + ' KB', preview: e.target.result }
+                            ...prev,
+                            { id: Math.random(), name: file.name, size: (file.size / 1024).toFixed(1) + ' KB', preview: e.target.result }
                         ]);
                     };
                     reader.readAsDataURL(file);
@@ -183,10 +243,10 @@
             };
 
             const handleFileChange = (e) => { if (e.target.files) processFiles(e.target.files); };
-            const onDrop = (e) => { 
-                e.preventDefault(); 
-                setIsDragging(false); 
-                if (e.dataTransfer.files) processFiles(e.dataTransfer.files); 
+            const onDrop = (e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                if (e.dataTransfer.files) processFiles(e.dataTransfer.files);
             };
             const removeImage = (id) => { setUploadedImages(prev => prev.filter(img => img.id !== id)); };
 
@@ -196,10 +256,10 @@
                 setIsSubmitting(true);
                 setTimeout(() => {
                     const now = new Date();
-                    const newP = { 
-                        id: Date.now(), user: formData.user, projectName: formData.projectName, type: formData.type, date: now.toISOString().slice(0, 16).replace('T', ' '), params: { fps: 30, mode: 'Standard' } 
+                    const newP = {
+                        id: Date.now(), user: formData.user, projectName: formData.projectName, type: formData.type, date: now.toISOString().slice(0, 16).replace('T', ' '), params: { fps: 30, mode: 'Standard' }
                     };
-                    
+
                     setIsSubmitting(false);
                     setSelectedProject(newP);
                     setView('editor');
@@ -226,9 +286,9 @@
                 document.body.removeChild(textArea);
             };
 
-            const saveRename = () => { 
-                setProjects(prev => prev.map(p => p.id === editingId ? { ...p, [editingField]: editValue } : p)); 
-                setEditingId(null); setEditingField(null); 
+            const saveRename = () => {
+                setProjects(prev => prev.map(p => p.id === editingId ? { ...p, [editingField]: editValue } : p));
+                setEditingId(null); setEditingField(null);
             };
 
             const renderDashboard = () => (
@@ -241,16 +301,16 @@
                         <div className="flex-1 flex flex-col justify-center space-y-10 font-sans">
                             <div className="space-y-3">
                                 <label className="text-xs text-slate-400 font-bold tracking-widest uppercase font-mono">使用者名稱</label>
-                                <input className="w-full bg-[#161b22] border border-slate-700 rounded-xl p-5 text-white outline-none focus:ring-1 focus:ring-blue-500 transition-all shadow-inner font-sans" placeholder="您的名稱..." value={formData.user} onChange={e => setFormData({...formData, user: e.target.value})} />
+                                <input className="w-full bg-[#161b22] border border-slate-700 rounded-xl p-5 text-white outline-none focus:ring-1 focus:ring-blue-500 transition-all shadow-inner font-sans" placeholder="您的名稱..." value={formData.user} onChange={e => setFormData({ ...formData, user: e.target.value })} />
                             </div>
                             <div className="space-y-3 font-sans">
                                 <label className="text-xs text-slate-400 font-bold tracking-widest uppercase font-mono">專案名稱</label>
-                                <input className="w-full bg-[#161b22] border border-slate-700 rounded-xl p-5 text-white outline-none focus:ring-1 focus:ring-blue-500 transition-all shadow-inner font-sans" placeholder="專案標題..." value={formData.projectName} onChange={e => setFormData({...formData, projectName: e.target.value})} />
+                                <input className="w-full bg-[#161b22] border border-slate-700 rounded-xl p-5 text-white outline-none focus:ring-1 focus:ring-blue-500 transition-all shadow-inner font-sans" placeholder="專案標題..." value={formData.projectName} onChange={e => setFormData({ ...formData, projectName: e.target.value })} />
                             </div>
                             <div className="space-y-3 font-sans">
                                 <label className="text-xs text-slate-400 font-bold tracking-widest uppercase font-mono">渲染引擎類型</label>
                                 <div className="relative">
-                                    <select className="w-full bg-[#161b22] border border-slate-700 rounded-xl p-5 text-white outline-none appearance-none cursor-pointer" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
+                                    <select className="w-full bg-[#161b22] border border-slate-700 rounded-xl p-5 text-white outline-none appearance-none cursor-pointer" value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}>
                                         <option>Adobe Animate</option>
                                         <option>視差卷軸</option>
                                     </select>
@@ -276,7 +336,7 @@
                             </div>
                             <div className="text-[9px] text-slate-600 bg-slate-800/30 px-4 py-1.5 rounded-full border border-slate-700/50 uppercase font-black tracking-widest">Secured Env</div>
                         </header>
-                        
+
                         <main className="flex-1 overflow-y-auto p-12 custom-scrollbar font-sans">
                             <div className="max-w-6xl mx-auto pb-32">
                                 <div className="flex items-center gap-4 mb-10 font-sans">
@@ -298,35 +358,34 @@
                                             </div>
 
                                             <div className="flex justify-between items-start mb-5 font-mono pr-12">
-                                                {/* 修改：移除了 uppercase class 並將 tracking-[0.2em] 改為 tracking-wide，讓 Adobe Animate 可以顯示大小寫 */}
                                                 <span className={`px-3 py-1 rounded-lg text-[9px] font-black tracking-wide border ${p.type === 'Adobe Animate' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'} font-mono`}>{p.type}</span>
                                                 <span className="text-[11px] text-slate-700 font-bold font-mono">{p.date}</span>
                                             </div>
-                                            
+
                                             {editingId === p.id && editingField === 'projectName' ? (
                                                 <div className="flex items-center gap-2 mb-4 font-sans" onClick={e => e.stopPropagation()}>
-                                                  <input autoFocus className="bg-[#161b22] border border-blue-500 rounded-xl px-4 py-2 text-base text-white w-full shadow-inner font-sans" value={editValue} onChange={e => setEditValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && saveRename()} />
-                                                  <button onClick={saveRename} className="text-green-400 p-2 bg-green-500/5 rounded-lg font-sans"><Icon name="check" size={24}/></button>
+                                                    <input autoFocus className="bg-[#161b22] border border-blue-500 rounded-xl px-4 py-2 text-base text-white w-full shadow-inner font-sans" value={editValue} onChange={e => setEditValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && saveRename()} />
+                                                    <button onClick={saveRename} className="text-green-400 p-2 bg-green-500/5 rounded-lg font-sans"><Icon name="check" size={24} /></button>
                                                 </div>
                                             ) : (
                                                 <h3 className="text-lg font-black text-white mb-2 tracking-tight transition-colors truncate font-display">{p.projectName}</h3>
                                             )}
-                                            
+
                                             <div className="text-[12px] text-slate-500 mb-8 flex items-center gap-2 font-sans">
                                                 {editingId === p.id && editingField === 'user' ? (
-                                                  <div className="flex items-center gap-2 w-full font-sans" onClick={e => e.stopPropagation()}>
-                                                    <Icon name="user" size={12} className="text-blue-500/50" />
-                                                    <input autoFocus className="bg-[#161b22] border border-blue-500 rounded-xl px-3 py-1 text-[12px] text-white w-full outline-none font-sans" value={editValue} onChange={e => setEditValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && saveRename()} />
-                                                    <button onClick={saveRename} className="text-green-400 font-sans"><Icon name="check" size={16}/></button>
-                                                  </div>
+                                                    <div className="flex items-center gap-2 w-full font-sans" onClick={e => e.stopPropagation()}>
+                                                        <Icon name="user" size={12} className="text-blue-500/50" />
+                                                        <input autoFocus className="bg-[#161b22] border border-blue-500 rounded-xl px-3 py-1 text-[12px] text-white w-full outline-none font-sans" value={editValue} onChange={e => setEditValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && saveRename()} />
+                                                        <button onClick={saveRename} className="text-green-400 font-sans"><Icon name="check" size={16} /></button>
+                                                    </div>
                                                 ) : (
-                                                  <>
-                                                    <Icon name="user" size={13} className="text-blue-500/50 font-sans" />
-                                                    <span className="text-slate-400 font-black tracking-wide font-sans">{p.user}</span>
-                                                  </>
+                                                    <>
+                                                        <Icon name="user" size={13} className="text-blue-500/50 font-sans" />
+                                                        <span className="text-slate-400 font-black tracking-wide font-sans">{p.user}</span>
+                                                    </>
                                                 )}
                                             </div>
-                                            
+
                                             <div className="p-5 rounded-2xl bg-black/40 border border-slate-800/50 font-mono text-[11px] flex justify-between items-center text-blue-400/80 font-mono">
                                                 {JSON.stringify(p.params).replace(/[{}]/g, '').replace(/"/g, '')}
                                                 <button onClick={(e) => { e.stopPropagation(); copyParams(p); }} className="text-slate-600 hover:text-blue-400 p-2 bg-slate-800/50 rounded-lg shrink-0 font-sans"><Icon name={copiedId === p.id ? "clipboard-check" : "copy"} size={16} /></button>
@@ -358,17 +417,18 @@
                                 </div>
                             </div>
                         </header>
-                        
+
                         <div className="p-10 pb-0 shrink-0 bg-[#0d1117] z-20 font-sans">
                             <div className="w-full">
                                 <input type="file" multiple accept="image/*" className="hidden" id="file-upload" onChange={handleFileChange} />
-                                <label htmlFor="file-upload" 
+                                <label htmlFor="file-upload"
                                     className={`w-full h-48 border-2 border-dashed border-slate-800 rounded-2xl flex flex-col items-center justify-center bg-slate-900/30 hover:border-slate-700 cursor-pointer gap-5 transition-all ${isDragging ? 'bg-blue-500/10 border-blue-500 scale-[1.01]' : ''}`}
                                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                                     onDragLeave={() => setIsDragging(false)}
                                     onDrop={onDrop}
                                 >
-                                    <div className="p-5 bg-slate-800 rounded-xl text-slate-500 font-sans"><Icon name="upload-cloud" size={36} className={isDragging ? 'text-blue-400' : ''} /></div>
+                                    {/* 修正：在 Icon 的外層 div 加上 flex items-center justify-center 以確保垂直置中 */}
+                                    <div className="p-5 bg-slate-800 rounded-xl text-slate-500 font-sans flex items-center justify-center"><Icon name="upload-cloud" size={36} className={isDragging ? 'text-blue-400' : ''} /></div>
                                     <div className="text-center font-sans">
                                         <h3 className="text-lg font-black text-white tracking-tight font-display">圖片上傳</h3>
                                         <p className="text-sm text-slate-600 mt-2 font-medium font-sans">點擊上傳或是拖移圖片至此</p>
@@ -401,12 +461,12 @@
                                 ))}
                             </div>
                         </main>
-                        
+
                         <footer className="p-10 pt-4 border-t border-slate-800/50 flex justify-center gap-10 pb-12 bg-[#0d1117] font-sans">
                             <button className="flex-1 max-w-[280px] py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all text-[16px] flex items-center justify-center gap-3 tracking-wide font-sans">
                                 <Icon name="external-link" size={20} /> Live Preview
                             </button>
-                            <button className="flex-1 max-w-[280px] py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all text-[16px] flex items-center justify-center gap-3 tracking-wide font-sans"> 
+                            <button className="flex-1 max-w-[280px] py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all text-[16px] flex items-center justify-center gap-3 tracking-wide font-sans">
                                 <Icon name="download" size={20} /> Download Package
                             </button>
                         </footer>
@@ -427,13 +487,13 @@
                         </div>
                         <div className="p-8 bg-[#0d1117] border-t border-slate-800">
                             <form onSubmit={handleSendMessage} className="relative font-sans">
-                                <textarea 
-                                    ref={textareaRef} 
-                                    rows="3" 
-                                    className="w-full bg-[#0a0c10] border border-slate-800 focus:border-blue-600 rounded-2xl p-6 pr-20 text-sm text-slate-200 outline-none transition-all placeholder:text-slate-700 resize-none shadow-inner font-sans" 
-                                    placeholder="傳送指令..." 
-                                    value={chatInput} 
-                                    onChange={e => setChatInput(e.target.value)} 
+                                <textarea
+                                    ref={textareaRef}
+                                    rows="3"
+                                    className="w-full bg-[#0a0c10] border border-slate-800 focus:border-blue-600 rounded-2xl p-6 pr-20 text-sm text-slate-200 outline-none transition-all placeholder:text-slate-700 resize-none shadow-inner font-sans"
+                                    placeholder="傳送指令..."
+                                    value={chatInput}
+                                    onChange={e => setChatInput(e.target.value)}
                                     onCompositionStart={() => setIsComposing(true)}
                                     onCompositionEnd={() => setIsComposing(false)}
                                     onKeyDown={handleKeyDown}
@@ -448,7 +508,7 @@
             return (
                 <div className="w-full h-screen selection:bg-blue-500/30">
                     {view === 'dashboard' ? renderDashboard() : renderEditor()}
-                    
+
                     {/* 全局彈窗：移至最外層 App 以確保在所有視圖皆可運作 */}
 
                     {/* 預覽彈窗 */}
@@ -489,11 +549,11 @@
                                                 <Icon name={expandedSection === 'notes' ? "chevron-up" : "chevron-down"} size={22} />
                                             </button>
                                             {expandedSection === 'notes' && <div className="px-8 pb-6 text-[13px] text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4 font-normal font-sans">
-                                                • 彈窗關閉按鈕已統一拉出方框外側，優化大圖預覽時的操作體驗，避免遮擋主要內容。現在點擊遮罩層或外部區域亦可關閉視窗。<br/>
-                                                • 編輯器佈局修正：上傳框區域已固定高度與位置，確保在圖片清單增加時，版面不會產生非預期的位移，提供更穩定的拖曳上傳體驗。<br/>
-                                                • 效能優化：針對大量圖片載入進行了渲染層級的最佳化，現在即使上傳超過 50 張圖片，介面依然能保持流暢的滾動與互動。<br/>
-                                                • 快捷鍵支援：在專案列表頁面，現在可以使用方向鍵進行專案的快速導覽，按下 Enter 即可進入編輯模式。<br/>
-                                                • 狀態同步：修正了多視窗操作時，專案狀態可能未能即時同步的問題，現在所有變更都會即時反映在 Dashboard 上。<br/>
+                                                • 彈窗關閉按鈕已統一拉出方框外側，優化大圖預覽時的操作體驗，避免遮擋主要內容。現在點擊遮罩層或外部區域亦可關閉視窗。<br />
+                                                • 編輯器佈局修正：上傳框區域已固定高度與位置，確保在圖片清單增加時，版面不會產生非預期的位移，提供更穩定的拖曳上傳體驗。<br />
+                                                • 效能優化：針對大量圖片載入進行了渲染層級的最佳化，現在即使上傳超過 50 張圖片，介面依然能保持流暢的滾動與互動。<br />
+                                                • 快捷鍵支援：在專案列表頁面，現在可以使用方向鍵進行專案的快速導覽，按下 Enter 即可進入編輯模式。<br />
+                                                • 狀態同步：修正了多視窗操作時，專案狀態可能未能即時同步的問題，現在所有變更都會即時反映在 Dashboard 上。<br />
                                                 • 視覺微調：調整了整體字距與行高，提升長時間閱讀的舒適度，並對深色模式下的對比度進行了微調，符合 WCAG 2.1 標準。
                                             </div>}
                                         </div>
@@ -532,4 +592,5 @@
         root.render(<App />);
     </script>
 </body>
+
 </html>
