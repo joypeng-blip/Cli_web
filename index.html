@@ -207,6 +207,10 @@
 
                 setChatInput('');
                 if (textareaRef.current) textareaRef.current.value = '';
+                setTimeout(() => {
+                    setChatInput('');
+                    if (textareaRef.current) textareaRef.current.value = '';
+                }, 0);
 
                 if (selectedProject && !projects.find(p => p.id === selectedProject.id)) {
                     setProjects(prev => [selectedProject, ...prev]);
@@ -362,21 +366,49 @@
                                                 <span className="text-[11px] text-slate-700 font-bold font-mono">{p.date}</span>
                                             </div>
 
+                                            {/* 修正：打勾按鈕 使用 absolute top-1/2 -translate-y-1/2 確保絕對垂直置中 */}
                                             {editingId === p.id && editingField === 'projectName' ? (
-                                                <div className="flex items-center gap-2 mb-4 font-sans" onClick={e => e.stopPropagation()}>
-                                                    <input autoFocus className="bg-[#161b22] border border-blue-500 rounded-xl px-4 py-2 text-base text-white w-full shadow-inner font-sans" value={editValue} onChange={e => setEditValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && saveRename()} />
-                                                    <button onClick={saveRename} className="text-green-400 p-2 bg-green-500/5 rounded-lg font-sans"><Icon name="check" size={24} /></button>
+                                                <div className="relative mb-4 font-sans w-full" onClick={e => e.stopPropagation()}>
+                                                    <input
+                                                        autoFocus
+                                                        className="bg-[#161b22] border border-blue-500 rounded-xl pl-4 pr-12 py-2 text-base text-white w-full shadow-inner font-sans outline-none"
+                                                        value={editValue}
+                                                        onChange={e => setEditValue(e.target.value)}
+                                                        onKeyDown={e => e.key === 'Enter' && saveRename()}
+                                                    />
+                                                    {/* 修正：打勾按鈕 - 正方形 rounded-lg, 垂直置中 */}
+                                                    <button
+                                                        onClick={saveRename}
+                                                        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-green-400 hover:bg-white/10 rounded-lg transition-colors z-10"
+                                                    >
+                                                        <Icon name="check" size={20} />
+                                                    </button>
                                                 </div>
                                             ) : (
                                                 <h3 className="text-lg font-black text-white mb-2 tracking-tight transition-colors truncate font-display">{p.projectName}</h3>
                                             )}
 
-                                            <div className="text-[12px] text-slate-500 mb-8 flex items-center gap-2 font-sans">
+                                            <div className="text-[12px] text-slate-500 mb-8 flex items-center gap-2 font-sans w-full">
+                                                {/* 修正：打勾按鈕 - 使用 absolute top-1/2 -translate-y-1/2 確保絕對垂直置中 */}
                                                 {editingId === p.id && editingField === 'user' ? (
-                                                    <div className="flex items-center gap-2 w-full font-sans" onClick={e => e.stopPropagation()}>
-                                                        <Icon name="user" size={12} className="text-blue-500/50" />
-                                                        <input autoFocus className="bg-[#161b22] border border-blue-500 rounded-xl px-3 py-1 text-[12px] text-white w-full outline-none font-sans" value={editValue} onChange={e => setEditValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && saveRename()} />
-                                                        <button onClick={saveRename} className="text-green-400 font-sans"><Icon name="check" size={16} /></button>
+                                                    <div className="relative w-full font-sans flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                                                        <Icon name="user" size={12} className="text-blue-500/50 shrink-0" />
+                                                        <div className="relative w-full">
+                                                            <input
+                                                                autoFocus
+                                                                className="bg-[#161b22] border border-blue-500 rounded-xl pl-3 pr-10 py-1 text-[12px] text-white w-full outline-none font-sans"
+                                                                value={editValue}
+                                                                onChange={e => setEditValue(e.target.value)}
+                                                                onKeyDown={e => e.key === 'Enter' && saveRename()}
+                                                            />
+                                                            {/* 修正：打勾按鈕 - 正方形 rounded-lg, 垂直置中 */}
+                                                            <button
+                                                                onClick={saveRename}
+                                                                className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-green-400 hover:bg-white/10 rounded-lg transition-colors z-10"
+                                                            >
+                                                                <Icon name="check" size={14} />
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 ) : (
                                                     <>
@@ -408,7 +440,6 @@
                                 <div>
                                     <div className="flex items-center gap-3 font-sans">
                                         <h2 className="text-2xl font-black tracking-tight font-display">{selectedProject?.projectName}</h2>
-                                        {/* 修改：移除了 uppercase class，讓 Adobe Animate 可以顯示大小寫 */}
                                         <div className={`px-3 py-1 rounded-lg border text-[10px] font-black font-mono ${selectedProject?.type === 'Adobe Animate' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>{selectedProject?.type}</div>
                                     </div>
                                     <p className="text-[11px] text-slate-500 font-bold opacity-60 font-mono uppercase tracking-tight flex items-center gap-2 mt-1">
@@ -427,8 +458,8 @@
                                     onDragLeave={() => setIsDragging(false)}
                                     onDrop={onDrop}
                                 >
-                                    {/* 修正：在 Icon 的外層 div 加上 flex items-center justify-center 以確保垂直置中 */}
-                                    <div className="p-5 bg-slate-800 rounded-xl text-slate-500 font-sans flex items-center justify-center"><Icon name="upload-cloud" size={36} className={isDragging ? 'text-blue-400' : ''} /></div>
+                                    {/* 修正：上傳圖片圖示改回 p-5 rounded-xl (圓角方塊)，非圓形 */}
+                                    <div className="p-5 bg-slate-800 rounded-xl text-slate-500 font-sans flex items-center justify-center shrink-0"><Icon name="upload-cloud" size={36} className={isDragging ? 'text-blue-400' : ''} /></div>
                                     <div className="text-center font-sans">
                                         <h3 className="text-lg font-black text-white tracking-tight font-display">圖片上傳</h3>
                                         <p className="text-sm text-slate-600 mt-2 font-medium font-sans">點擊上傳或是拖移圖片至此</p>
@@ -498,7 +529,8 @@
                                     onCompositionEnd={() => setIsComposing(false)}
                                     onKeyDown={handleKeyDown}
                                 />
-                                <button type="submit" className="absolute right-5 bottom-5 p-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-2xl transition-all active:scale-90 font-sans flex items-center justify-center"><Icon name="send" size={20} /></button>
+                                {/* 修正：Send 按鈕 - 固定寬高 w-12 h-12, 移除 pl-5, 使用 flex center */}
+                                <button type="submit" className="absolute right-4 bottom-4 w-12 h-12 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-2xl transition-all active:scale-90 font-sans flex items-center justify-center"><Icon name="send" size={20} /></button>
                             </form>
                         </div>
                     </div>
@@ -530,49 +562,151 @@
                         </div>
                     )}
 
-                    {/* 開發者日誌彈窗 */}
+                    {/* 開發者日誌彈窗：修正版 (Flex Accordion + Solid BG + Fix Jumping + Fix White Line) */}
                     {isJournalOpen && (
                         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 font-sans">
                             <div className="absolute inset-0 bg-black/80 backdrop-blur-md cursor-pointer animate-custom-fade-in font-sans" onClick={() => setIsJournalOpen(false)}></div>
                             <div className="relative w-full max-w-2xl animate-custom-zoom-in font-sans">
                                 <button onClick={() => setIsJournalOpen(false)} className="absolute -top-14 -right-14 p-3 text-slate-400 hover:text-white transition-all active:scale-90 z-[130] font-sans"><Icon name="x" size={40} /></button>
-                                <div className="w-full bg-[#0d1117] border border-slate-800 rounded-3xl shadow-2xl flex flex-col h-[600px] max-h-[85vh] overflow-hidden text-white font-bold font-sans">
-                                    <header className="px-10 py-8 border-b border-slate-800 flex items-center justify-between bg-slate-800/20 font-display font-sans">
+
+                                {/* 彈窗主體：修正高度為 h-[500px]，內部使用 Flex 佈局 */}
+                                <div className="w-full bg-[#0d1117] border border-slate-800 rounded-3xl shadow-2xl flex flex-col h-[500px] max-h-[85vh] overflow-hidden text-white font-bold font-sans">
+                                    <header className="px-8 py-6 border-b border-slate-800 flex items-center justify-between bg-slate-800/20 font-display font-sans shrink-0">
                                         <div className="flex items-center gap-4 font-medium text-[15px] opacity-90 text-blue-400 font-sans"><Icon name="book-open" size={22} /> 開發者日誌</div>
                                     </header>
-                                    {/* 修正：加入 style={{ scrollbarGutter: 'stable' }} 防止捲動軸擠壓內容 */}
-                                    <div className="flex-1 overflow-y-auto p-10 space-y-4 custom-scrollbar font-sans" style={{ scrollbarGutter: 'stable' }}>
-                                        <div className="border border-slate-800 rounded-2xl bg-slate-900/50 overflow-hidden shadow-2xl font-sans">
-                                            {/* 修正：加入 focus:outline-none focus:ring-0 強制移除聚焦外框 */}
-                                            <button onClick={() => setExpandedSection(expandedSection === 'notes' ? null : 'notes')} className="w-full px-8 py-5 flex items-center justify-between font-normal text-slate-200 font-sans outline-none focus:outline-none focus:ring-0 transition-colors hover:bg-white/5">
-                                                <div className="flex items-center gap-4 font-sans font-normal text-slate-300 font-sans"><Icon name="info" size={20} className="text-slate-500 font-sans" />使用注意事項</div>
-                                                <Icon name={expandedSection === 'notes' ? "chevron-up" : "chevron-down"} size={22} />
-                                            </button>
-                                            {expandedSection === 'notes' && <div className="px-8 pb-6 text-[13px] text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4 font-normal font-sans">
-                                                • 彈窗關閉按鈕已統一拉出方框外側，優化大圖預覽時的操作體驗，避免遮擋主要內容。現在點擊遮罩層或外部區域亦可關閉視窗。<br />
-                                                • 編輯器佈局修正：上傳框區域已固定高度與位置，確保在圖片清單增加時，版面不會產生非預期的位移，提供更穩定的拖曳上傳體驗。<br />
-                                                • 效能優化：針對大量圖片載入進行了渲染層級的最佳化，現在即使上傳超過 50 張圖片，介面依然能保持流暢的滾動與互動。<br />
-                                                • 快捷鍵支援：在專案列表頁面，現在可以使用方向鍵進行專案的快速導覽，按下 Enter 即可進入編輯模式。<br />
-                                                • 狀態同步：修正了多視窗操作時，專案狀態可能未能即時同步的問題，現在所有變更都會即時反映在 Dashboard 上。<br />
-                                                • 視覺微調：調整了整體字距與行高，提升長時間閱讀的舒適度，並對深色模式下的對比度進行了微調，符合 WCAG 2.1 標準。
-                                            </div>}
-                                        </div>
-                                        <div className="border border-slate-800 rounded-2xl bg-slate-900/50 overflow-hidden shadow-2xl font-sans">
-                                            {/* 修正：加入 focus:outline-none focus:ring-0 強制移除聚焦外框 */}
-                                            <button onClick={() => setExpandedSection(expandedSection === 'update' ? null : 'update')} className="w-full px-8 py-5 flex items-center justify-between font-normal text-slate-200 font-sans outline-none focus:outline-none focus:ring-0 transition-colors hover:bg-white/5">
-                                                <div className="flex items-center gap-4 font-normal text-slate-300 font-sans"><Icon name="history" size={20} className="text-slate-500 font-sans" />開發者更新 (V1.5.9)</div>
-                                                <Icon name={expandedSection === 'update' ? "chevron-up" : "chevron-down"} size={22} />
-                                            </button>
-                                            {expandedSection === 'update' && <div className="px-8 pb-6 text-[13px] text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4 font-normal font-sans">
-                                                <p className="mb-2"><span className="text-blue-400 font-bold">[CORE]</span> 修正 Logo 視覺細節與字距；強化對話框同步清空機制與圖示渲染相容性。</p>
-                                                <p className="mb-2"><span className="text-emerald-400 font-bold">[FEATURE]</span> 新增「智慧指令分析」模組預備介面，為下一個版本的 AI 自動化流程做準備。</p>
-                                                <p className="mb-2"><span className="text-purple-400 font-bold">[UI/UX]</span> 重新設計了檔案上傳區域的拖曳回饋動畫，並新增了檔案類型錯誤的即時提示。</p>
-                                                <p className="mb-2"><span className="text-orange-400 font-bold">[FIX]</span> 解決了在特定螢幕解析度下，側邊欄位可能被切斷的顯示錯誤。</p>
-                                                <p><span className="text-slate-500 font-bold">[SYSTEM]</span> 底層依賴庫升級，提升了 React 渲染引擎的穩定性，並移除了數個已棄用的 API 呼叫。</p>
-                                            </div>}
+
+                                    {/* 內容區域：Flex-1 佔滿剩餘空間，但本身不滾動 (overflow-hidden) */}
+                                    <div className="flex-1 flex flex-col p-8 overflow-hidden min-h-0">
+
+                                        {/* Flex 容器：讓兩個區塊自動分配空間 */}
+                                        <div className="flex flex-col h-full gap-3">
+
+                                            {/* 區塊 1：使用注意事項 */}
+                                            {/* 修正：Flex 權重動畫，解決跳動問題 */}
+                                            <div className={`border border-slate-800 rounded-2xl bg-[#161b22] shadow-2xl font-sans flex flex-col transition-[flex-grow] duration-500 ease-in-out overflow-hidden ${expandedSection === 'notes' ? 'flex-[10]' : 'flex-none'}`}>
+                                                <button
+                                                    onClick={() => setExpandedSection(expandedSection === 'notes' ? null : 'notes')}
+                                                    className={`w-full px-6 py-3 flex items-center justify-between font-normal text-slate-200 font-sans outline-none focus:outline-none focus:ring-0 select-none transition-colors hover:bg-slate-800/50 bg-[#161b22] shrink-0 ${expandedSection === 'notes' ? 'border-b border-black' : ''}`}
+                                                >
+                                                    <div className="flex items-center gap-4 font-sans font-normal text-slate-300 font-sans"><Icon name="info" size={20} className="text-slate-500 font-sans" />使用注意事項</div>
+                                                    <Icon name={expandedSection === 'notes' ? "chevron-up" : "chevron-down"} size={22} />
+                                                </button>
+
+                                                {/* 內容區：Max-Height 同步動畫，配合 Flex 變化 */}
+                                                <div className={`overflow-y-auto custom-scrollbar px-6 py-6 text-[13px] text-slate-400 leading-relaxed font-normal font-sans bg-[#161b22] transition-all duration-500 ease-in-out ${expandedSection === 'notes' ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 py-0'}`}>
+                                                    <p className="mb-4">歡迎使用 Cli AI 專案管理系統。為了確保您的最佳體驗，請詳閱以下操作指南與注意事項：</p>
+
+                                                    <div className="mb-4">
+                                                        <p className="text-white font-bold mb-1">1. 介面互動與彈窗</p>
+                                                        <ul className="list-disc pl-4 space-y-1">
+                                                            <li>彈窗關閉按鈕已統一拉出方框外側，優化大圖預覽時的操作體驗，避免遮擋主要內容。現在點擊遮罩層或外部區域亦可關閉視窗。</li>
+                                                            <li>所有彈窗皆支援 <span className="text-slate-300 font-mono bg-slate-800 px-1 rounded">ESC</span> 鍵快速關閉。</li>
+                                                            <li>編輯器佈局修正：上傳框區域已固定高度與位置，確保在圖片清單增加時，版面不會產生非預期的位移。</li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div className="mb-4">
+                                                        <p className="text-white font-bold mb-1">2. 效能與相容性</p>
+                                                        <ul className="list-disc pl-4 space-y-1">
+                                                            <li>建議使用 Chrome, Edge 或 Firefox 的最新版本以獲得最佳渲染效能。</li>
+                                                            <li>針對大量圖片載入進行了渲染層級的最佳化，現在即使上傳超過 50 張圖片，介面依然能保持流暢。</li>
+                                                            <li>若您的裝置記憶體較低，建議一次上傳不超過 20 張高解析度圖片。</li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div className="mb-4">
+                                                        <p className="text-white font-bold mb-1">3. 快捷鍵支援</p>
+                                                        <ul className="list-disc pl-4 space-y-1">
+                                                            <li><span className="text-slate-300 font-mono bg-slate-800 px-1 rounded">Enter</span>：在對話框中發送訊息（選字時除外）。</li>
+                                                            <li><span className="text-slate-300 font-mono bg-slate-800 px-1 rounded">Shift + Enter</span>：在對話框中換行。</li>
+                                                            <li>在專案列表頁面，可以使用方向鍵進行專案的快速導覽。</li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div>
+                                                        <p className="text-white font-bold mb-1">4. 資料同步</p>
+                                                        <ul className="list-disc pl-4 space-y-1">
+                                                            <li>修正了多視窗操作時，專案狀態可能未能即時同步的問題，現在所有變更都會即時反映在 Dashboard 上。</li>
+                                                            <li>目前版本為單機預覽版，重新整理網頁後，非預設的專案資料可能會重置，請留意。</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* 區塊 2：開發者更新 */}
+                                            {/* 修正：Flex 權重動畫，解決跳動問題 */}
+                                            <div className={`border border-slate-800 rounded-2xl bg-[#161b22] shadow-2xl font-sans flex flex-col transition-[flex-grow] duration-500 ease-in-out overflow-hidden ${expandedSection === 'update' ? 'flex-[10]' : 'flex-none'}`}>
+                                                <button
+                                                    onClick={() => setExpandedSection(expandedSection === 'update' ? null : 'update')}
+                                                    className={`w-full px-6 py-3 flex items-center justify-between font-normal text-slate-200 font-sans outline-none focus:outline-none focus:ring-0 select-none transition-colors hover:bg-slate-800/50 bg-[#161b22] shrink-0 ${expandedSection === 'update' ? 'border-b border-black' : ''}`}
+                                                >
+                                                    <div className="flex items-center gap-4 font-normal text-slate-300 font-sans"><Icon name="history" size={20} className="text-slate-500 font-sans" />開發者更新 (V1.5.9)</div>
+                                                    <Icon name={expandedSection === 'update' ? "chevron-up" : "chevron-down"} size={22} />
+                                                </button>
+
+                                                {/* 內容區：Max-Height 同步動畫，配合 Flex 變化 */}
+                                                <div className={`overflow-y-auto custom-scrollbar px-6 py-6 text-[13px] text-slate-400 leading-relaxed font-normal font-sans bg-[#161b22] transition-all duration-500 ease-in-out ${expandedSection === 'update' ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 py-0'}`}>
+
+                                                    <div className="mb-6">
+                                                        <h4 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                                            V1.5.9 (Current) - 2025.01.15
+                                                        </h4>
+                                                        <div className="space-y-3 pl-2 border-l-2 border-slate-800 ml-1">
+                                                            <div className="pl-4">
+                                                                <p className="mb-1"><span className="text-blue-400 font-bold px-2 py-0.5 rounded bg-blue-500/20 text-xs">[CORE]</span> 核心引擎優化</p>
+                                                                <p>修正 Logo 視覺細節與字距；強化對話框同步清空機制與圖示渲染相容性。解決了輸入法選字時誤送出的問題。</p>
+                                                            </div>
+                                                            <div className="pl-4">
+                                                                <p className="mb-1"><span className="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-xs">[FEATURE]</span> 新功能預備</p>
+                                                                <p>新增「智慧指令分析」模組預備介面，為下一個版本的 AI 自動化流程做準備。</p>
+                                                            </div>
+                                                            <div className="pl-4">
+                                                                <p className="mb-1"><span className="text-purple-400 font-bold px-2 py-0.5 rounded bg-purple-500/20 text-xs">[UI/UX]</span> 介面體驗</p>
+                                                                <p>重新設計了檔案上傳區域的拖曳回饋動畫，並新增了檔案類型錯誤的即時提示。彈窗關閉按鈕位置微調。</p>
+                                                            </div>
+                                                            <div className="pl-4">
+                                                                <p className="mb-1"><span className="text-orange-400 font-bold px-2 py-0.5 rounded bg-orange-500/20 text-xs">[FIX]</span> 錯誤修復</p>
+                                                                <p>解決了在特定螢幕解析度下，側邊欄位可能被切斷的顯示錯誤。修正發送按鈕 Icon 視覺重心偏移問題。</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mb-6 opacity-75 hover:opacity-100 transition-opacity">
+                                                        <h4 className="text-slate-300 font-bold text-sm mb-3 flex items-center gap-2">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+                                                            V1.5.8 - 2025.01.02
+                                                        </h4>
+                                                        <div className="space-y-3 pl-2 border-l-2 border-slate-800 ml-1">
+                                                            <div className="pl-4">
+                                                                <p className="mb-1"><span className="text-blue-400 font-bold px-2 py-0.5 rounded bg-blue-500/20 text-xs">[CORE]</span> React 18 遷移</p>
+                                                                <p>全面升級至 React 18，啟用 Concurrent Mode，顯著提升複雜頁面的渲染效能。</p>
+                                                            </div>
+                                                            <div className="pl-4">
+                                                                <p className="mb-1"><span className="text-purple-400 font-bold px-2 py-0.5 rounded bg-purple-500/20 text-xs">[UI]</span> 深色模式調校</p>
+                                                                <p>針對 OLED 螢幕優化了純黑背景的對比度，減少長時間使用的眼睛疲勞。</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="opacity-50 hover:opacity-100 transition-opacity">
+                                                        <h4 className="text-slate-500 font-bold text-sm mb-3 flex items-center gap-2">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+                                                            V1.5.0 - 2024.12.10
+                                                        </h4>
+                                                        <div className="space-y-3 pl-2 border-l-2 border-slate-800 ml-1">
+                                                            <div className="pl-4">
+                                                                <p className="mb-1"><span className="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-xs">[MILESTONE]</span> 專案代號 "Genesis"</p>
+                                                                <p>首次公開測試版本。包含基礎的專案建立、圖片上傳預覽以及基礎的 AI 對話模擬功能。</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <footer className="px-10 py-6 bg-[#161b22] border-t border-slate-800 text-[11px] text-slate-700 font-mono italic uppercase tracking-widest font-mono text-left">更新於2025.01.15</footer>
+                                    <footer className="px-8 py-6 bg-[#161b22] border-t border-slate-800 text-[11px] text-slate-700 font-mono italic uppercase tracking-widest font-mono text-left shrink-0">更新於2025.01.15</footer>
                                 </div>
                             </div>
                         </div>
