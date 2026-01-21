@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cli AI</title>
+    <title>Cli AI 專案管理系統</title>
     <!-- 外部資源：Tailwind, Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -306,7 +306,6 @@
                                                 <span className="text-[11px] text-slate-700 font-bold font-mono">{p.date}</span>
                                             </div>
                                             
-                                            {/* 修正：打勾按鈕 - 正方形 rounded-lg, 垂直左右置中 */}
                                             {editingId === p.id && editingField === 'projectName' ? (
                                                 <div className="relative mb-4 font-sans w-full" onClick={e => e.stopPropagation()}>
                                                   <input 
@@ -316,7 +315,6 @@
                                                     onChange={e => setEditValue(e.target.value)} 
                                                     onKeyDown={e => e.key === 'Enter' && saveRename()} 
                                                   />
-                                                  {/* 使用 absolute top-1/2 -translate-y-1/2 固定在輸入框內部右側垂直中間，並設定 w-8 h-8 正方形 */}
                                                   <button 
                                                     onClick={saveRename} 
                                                     className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-green-400 hover:bg-white/10 rounded-lg transition-colors z-10"
@@ -329,7 +327,6 @@
                                             )}
                                             
                                             <div className="text-[12px] text-slate-500 mb-8 flex items-center gap-2 font-sans w-full">
-                                                {/* 修正：打勾按鈕 - 正方形 rounded-md, 垂直左右置中 */}
                                                 {editingId === p.id && editingField === 'user' ? (
                                                   <div className="relative w-full font-sans flex items-center gap-2" onClick={e => e.stopPropagation()}>
                                                     <Icon name="user" size={12} className="text-blue-500/50 shrink-0" />
@@ -341,7 +338,6 @@
                                                             onChange={e => setEditValue(e.target.value)} 
                                                             onKeyDown={e => e.key === 'Enter' && saveRename()} 
                                                         />
-                                                        {/* 使用 absolute top-1/2 -translate-y-1/2 固定在輸入框內部右側垂直中間，並設定 w-7 h-7 正方形 */}
                                                         <button 
                                                             onClick={saveRename} 
                                                             className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center text-green-400 hover:bg-white/10 rounded-md transition-colors z-10"
@@ -360,7 +356,7 @@
                                             
                                             <div className="p-5 rounded-2xl bg-black/40 border border-slate-800/50 font-mono text-[11px] flex justify-between items-center text-blue-400/80 font-mono">
                                                 {JSON.stringify(p.params).replace(/[{}]/g, '').replace(/"/g, '')}
-                                                <button onClick={(e) => { e.stopPropagation(); copyParams(p); }} className="text-slate-600 hover:text-blue-400 p-2 bg-slate-800/50 rounded-lg shrink-0 font-sans"><Icon name={copiedId === p.id ? "clipboard-check" : "copy"} size={16} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); copyParams(p); }} className="text-slate-600 hover:text-blue-400 p-2 bg-slate-800/50 rounded-lg shrink-0 font-sans flex items-center justify-center"><Icon name={copiedId === p.id ? "clipboard-check" : "copy"} size={16} /></button>
                                             </div>
                                         </div>
                                     ))}
@@ -469,7 +465,8 @@
                                     onCompositionEnd={() => setIsComposing(false)}
                                     onKeyDown={handleKeyDown}
                                 />
-                                <button type="submit" className="absolute right-5 bottom-5 p-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-2xl transition-all active:scale-90 font-sans flex items-center justify-center pl-5"><Icon name="send" size={20} /></button>
+                                {/* 修正：Send 按鈕 - 設定固定寬高 w-12 h-12 確保正方形，移除 padding，保留 flex center 確保置中，加入 p-0 */}
+                                <button type="submit" className="absolute right-5 bottom-5 w-12 h-12 p-0 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-2xl transition-all active:scale-90 font-sans flex items-center justify-center"><Icon name="send" size={20} /></button>
                             </form>
                         </div>
                     </div>
@@ -493,7 +490,8 @@
                                         <img src={previewImage.preview} className="w-full h-full object-contain font-sans" />
                                     </div>
                                     <div className="mt-8 flex items-center gap-10 text-white w-full px-2 font-sans">
-                                        <div className="flex items-center gap-4 mr-auto font-sans"><Icon name="sparkles" size={20} className="text-blue-400 font-sans" /><span className="text-base font-normal tracking-tight font-sans">{previewImage.name}</span></div>
+                                        {/* 修正：預覽視窗 icon 從 sparkles 改為 image */}
+                                        <div className="flex items-center gap-4 mr-auto font-sans"><Icon name="image" size={20} className="text-blue-400 font-sans" /><span className="text-base font-normal tracking-tight font-sans">{previewImage.name}</span></div>
                                         <div className="text-[11px] text-slate-500 font-black uppercase font-mono tracking-[0.2em] font-mono">{previewImage.size} | CORE_PREVIEW</div>
                                     </div>
                                 </div>
@@ -501,14 +499,14 @@
                         </div>
                     )}
 
-                    {/* 開發者日誌彈窗：修正版 (Flex Accordion + Solid BG + Fix Jumping + Fix White Line) */}
+                    {/* 開發者日誌彈窗：修正版 (CSS Grid Accordion + Sticky Header Removal + Solid BG) */}
                     {isJournalOpen && (
                         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 font-sans">
                             <div className="absolute inset-0 bg-black/80 backdrop-blur-md cursor-pointer animate-custom-fade-in font-sans" onClick={() => setIsJournalOpen(false)}></div>
                             <div className="relative w-full max-w-2xl animate-custom-zoom-in font-sans">
                                 <button onClick={() => setIsJournalOpen(false)} className="absolute -top-14 -right-14 p-3 text-slate-400 hover:text-white transition-all active:scale-90 z-[130] font-sans"><Icon name="x" size={40} /></button>
                                 
-                                {/* 彈窗主體：修正高度為 h-[500px]，內部使用 Flex 佈局 */}
+                                {/* 彈窗主體：設定固定高度，內部使用 Flex 佈局 */}
                                 <div className="w-full bg-[#0d1117] border border-slate-800 rounded-3xl shadow-2xl flex flex-col h-[500px] max-h-[85vh] overflow-hidden text-white font-bold font-sans">
                                     <header className="px-8 py-6 border-b border-slate-800 flex items-center justify-between bg-slate-800/20 font-display font-sans shrink-0">
                                         <div className="flex items-center gap-4 font-medium text-[15px] opacity-90 text-blue-400 font-sans"><Icon name="book-open" size={22} /> 開發者日誌</div>
@@ -520,9 +518,7 @@
                                         {/* Flex 容器：讓兩個區塊自動分配空間 */}
                                         <div className="flex flex-col h-full gap-3">
                                             
-                                            {/* 區塊 1：使用注意事項 */}
-                                            {/* 修正：Flex 權重動畫，解決跳動問題 */}
-                                            {/* 使用 CSS Grid 動畫代替 Flex 權重動畫，解決跳動問題 */}
+                                            {/* 區塊 1：使用注意事項 - 使用 CSS Grid 動畫代替 Flex 權重動畫，解決跳動問題 */}
                                             <div className="border border-slate-800 rounded-2xl bg-[#161b22] shadow-2xl font-sans flex flex-col overflow-hidden shrink-0">
                                                 <button 
                                                     onClick={() => setExpandedSection(expandedSection === 'notes' ? null : 'notes')} 
